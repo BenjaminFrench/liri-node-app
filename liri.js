@@ -1,7 +1,8 @@
 // Load API keys from file
 keys = require('./keys.js');
 
-// Load Twitter, Spotify, and Requests modules
+// Load FS, Twitter, Spotify, and Requests modules
+var fs = require('fs');
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require('request');
@@ -21,7 +22,7 @@ if (command === 'my-tweets') {
     // Call twitter API and get my 25 most recent tweets
     twitterClient.get('statuses/user_timeline', { user_id: 'Ben38192128', count: 25 }, function (error, tweets, response) {
         if (error) {
-            return(error);
+            return console.log(error);
         }
         else {
             // Log time and text of each tweet
@@ -77,7 +78,7 @@ else if (command === 'movie-this') {
     }
     request(`http://www.omdbapi.com/?apikey=${keys.omdbKeys.api_key}&t=${movie}`, function (error, response, body) {
         if (error) {
-            return error;
+            return console.log(error);
         }
         var movieObj = JSON.parse(body);
 
@@ -89,5 +90,29 @@ else if (command === 'movie-this') {
         console.log(movieObj.Language);
         console.log(movieObj.Plot);
         console.log(movieObj.Actors);
+    });
+}
+
+else if (command === 'do-what-it-says') {
+    fs.readFile("random.txt", "utf8", function (error, data) {
+
+        if (error) {
+            return console.log(error);
+        }
+
+        // Then split it by commas (to make it more readable)
+        var dataArr = data.split(",");
+
+        // Call liri again with the parameters in the file
+        const { exec } = require('child_process');
+
+        exec(`node liri.js ${dataArr[0]} ${dataArr[1]}`, (err, stdout, stderr) => {
+            if (err) {
+                console.error(`exec error: ${err}`);
+                return;
+            }
+
+            console.log(`${stdout}`);
+        });
     });
 }
