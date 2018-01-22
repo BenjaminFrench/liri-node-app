@@ -10,7 +10,7 @@ var request = require('request');
 // Command is first argument
 var command = process.argv[2];
 
-if (command === 'my-tweets') {
+function myTweets() {
     // Initialize Twitter client
     var twitterClient = new Twitter({
         consumer_key: keys.twitterKeys.consumer_key,
@@ -36,15 +36,7 @@ if (command === 'my-tweets') {
     });
 }
 
-else if (command === 'spotify-this-song') {
-    // Check if song name was provided, otherwise use default value
-    var song = '';
-    if (process.argv[3]) {
-        song = process.argv[3];
-    }
-    else {
-        song = 'track:The Sign artist:Ace of Base';
-    }
+function spotifyThisSong(song) {
     // Initialize Spotify client
     var spotifyClient = new Spotify({
         id: keys.spotifyKeys.client_id,
@@ -68,14 +60,7 @@ else if (command === 'spotify-this-song') {
     });
 }
 
-else if (command === 'movie-this') {
-    var movie = '';
-    if (process.argv[3]) {
-        movie = process.argv[3];
-    }
-    else {
-        movie = 'Mr. Nobody';
-    }
+function movieThis(movie) {
     request(`http://www.omdbapi.com/?apikey=${keys.omdbKeys.api_key}&t=${movie}`, function (error, response, body) {
         if (error) {
             return console.log(error);
@@ -93,6 +78,35 @@ else if (command === 'movie-this') {
     });
 }
 
+if (command === 'my-tweets') {
+    myTweets();
+}
+
+else if (command === 'spotify-this-song') {
+    // Check if song name was provided, otherwise use default value
+    var song = '';
+    if (process.argv[3]) {
+        song = process.argv[3];
+    }
+    else {
+        song = 'track:The Sign artist:Ace of Base';
+    }
+    
+    spotifyThisSong(song);
+}
+
+else if (command === 'movie-this') {
+    var movie = '';
+    if (process.argv[3]) {
+        movie = process.argv[3];
+    }
+    else {
+        movie = 'Mr. Nobody';
+    }
+    
+    movieThis(movie);
+}
+
 else if (command === 'do-what-it-says') {
     fs.readFile("random.txt", "utf8", function (error, data) {
 
@@ -104,15 +118,16 @@ else if (command === 'do-what-it-says') {
         var dataArr = data.split(",");
 
         // Call liri again with the parameters in the file
-        const { exec } = require('child_process');
-
-        exec(`node liri.js ${dataArr[0]} ${dataArr[1]}`, (err, stdout, stderr) => {
-            if (err) {
-                console.error(`exec error: ${err}`);
-                return;
-            }
-
-            console.log(`${stdout}`);
-        });
+        if (dataArr[0] === 'my-tweets') {
+            myTweets();
+        }
+        
+        else if (dataArr[0] === 'spotify-this-song') {
+            spotifyThisSong(dataArr[1]);
+        }
+        
+        else if (dataArr[0] === 'movie-this') {
+            movieThis(dataArr[1]);
+        }
     });
 }
