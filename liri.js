@@ -42,7 +42,7 @@ else if (command === 'spotify-this-song') {
         song = process.argv[3];
     }
     else {
-        song = 'The Sign';
+        song = 'track:The Sign artist:Ace of Base';
     }
     // Initialize Spotify client
     var spotifyClient = new Spotify({
