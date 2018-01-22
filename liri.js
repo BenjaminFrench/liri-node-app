@@ -66,3 +66,28 @@ else if (command === 'spotify-this-song') {
         console.log(`Preview URL: ${link}`);
     });
 }
+
+else if (command === 'movie-this') {
+    var movie = '';
+    if (process.argv[3]) {
+        movie = process.argv[3];
+    }
+    else {
+        movie = 'Mr. Nobody';
+    }
+    request(`http://www.omdbapi.com/?apikey=${keys.omdbKeys.api_key}&t=${movie}`, function (error, response, body) {
+        if (error) {
+            return error;
+        }
+        var movieObj = JSON.parse(body);
+
+        console.log(movieObj.Title);
+        console.log(movieObj.Year);
+        console.log('IMDB Rating:', movieObj.Ratings[0].Value);
+        console.log('RT Rating:', movieObj.Ratings[1].Value);
+        console.log(movieObj.Country);
+        console.log(movieObj.Language);
+        console.log(movieObj.Plot);
+        console.log(movieObj.Actors);
+    });
+}
