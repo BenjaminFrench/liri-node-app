@@ -7,7 +7,7 @@ var Spotify = require('node-spotify-api');
 var request = require('request');
 
 // Command is first argument
-var command = args[0];
+var command = process.argv[2];
 
 if (command === 'my-tweets') {
     // Initialize Twitter client
@@ -21,7 +21,7 @@ if (command === 'my-tweets') {
     // Call twitter API and get my 25 most recent tweets
     twitterClient.get('statuses/user_timeline', { user_id: 'Ben38192128', count: 25 }, function (error, tweets, response) {
         if (error) {
-            console.log(error);
+            return(error);
         }
         else {
             // Log time and text of each tweet
@@ -35,8 +35,34 @@ if (command === 'my-tweets') {
     });
 }
 
-// Initialize Spotify client
-var spotifyClient = new Spotify({
-    id: keys.spotifyKeys.client_id,
-    secret: keys.spotifyKeys.client_secret
-});
+else if (command === 'spotify-this-song') {
+    // Check if song name was provided, otherwise use default value
+    var song = '';
+    if (process.argv[3]) {
+        song = process.argv[3];
+    }
+    else {
+        song = 'The Sign';
+    }
+    // Initialize Spotify client
+    var spotifyClient = new Spotify({
+        id: keys.spotifyKeys.client_id,
+        secret: keys.spotifyKeys.client_secret
+    });
+
+    // Search api for track
+    spotifyClient.search({ type: 'track', query: song, limit: 1 }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
+        var title = data.tracks.items[0].name;
+        var artist = data.tracks.items[0].artists[0].name;
+        var album = data.tracks.items[0].album.name;
+        var link = data.tracks.items[0].preview_url;
+
+        console.log(`Song name: ${title}`);
+        console.log(`Artist: ${artist}`);
+        console.log(`Album: ${album}`);
+        console.log(`Preview URL: ${link}`);
+    });
+}
