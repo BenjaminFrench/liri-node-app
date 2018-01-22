@@ -114,20 +114,25 @@ else if (command === 'do-what-it-says') {
             return console.log(error);
         }
 
-        // Then split it by commas (to make it more readable)
-        var dataArr = data.split(",");
+        // Then split it by new lines
+        var dataArr = data.split('\n');
 
-        // Call liri again with the parameters in the file
-        if (dataArr[0] === 'my-tweets') {
-            myTweets();
-        }
+        // console.log(dataArr);
+        dataArr.forEach((element, index, array) => {
+            // Call liri again with the parameters in the file
+            var commandFromFile = element.split(',');
+            if (commandFromFile[0] === 'my-tweets') {
+                myTweets();
+            }
+
+            else if (commandFromFile[0] === 'spotify-this-song') {
+                spotifyThisSong(commandFromFile[1].replace(/(")/g, ''));
+            }
+
+            else if (commandFromFile[0] === 'movie-this') {
+                movieThis(commandFromFile[1].replace(/(")/g, ''));
+            }    
+        });
         
-        else if (dataArr[0] === 'spotify-this-song') {
-            spotifyThisSong(dataArr[1]);
-        }
-        
-        else if (dataArr[0] === 'movie-this') {
-            movieThis(dataArr[1]);
-        }
     });
 }
