@@ -10,6 +10,19 @@ var request = require('request');
 // Command is first argument
 var command = process.argv[2];
 
+// Console log and write to log.txt
+// Uses synchronous version of appendFile so that proper order is preserved
+function logToConsoleAndFile(text) {
+    console.log(text);
+    text += '\n';
+    try {
+        fs.appendFileSync('./log.txt', text);
+    }
+    catch (error) {
+        return console.log(error);
+    }
+}
+
 function myTweets() {
     // Initialize Twitter client
     var twitterClient = new Twitter({
@@ -22,15 +35,15 @@ function myTweets() {
     // Call twitter API and get my 25 most recent tweets
     twitterClient.get('statuses/user_timeline', { user_id: 'Ben38192128', count: 25 }, function (error, tweets, response) {
         if (error) {
-            return console.log(error);
+            return logToConsoleAndFile(error);
         }
         else {
             // Log time and text of each tweet
             tweets.forEach((element, index) => {
-                console.log('Tweet #' + (index+1));
-                console.log('Created at', element.created_at);
-                console.log(element.text);
-                console.log();
+                logToConsoleAndFile('Tweet #' + (index+1));
+                logToConsoleAndFile('Created at ' + element.created_at);
+                logToConsoleAndFile(element.text);
+                logToConsoleAndFile('');
             });
         }
     });
@@ -46,35 +59,37 @@ function spotifyThisSong(song) {
     // Search api for track
     spotifyClient.search({ type: 'track', query: song, limit: 1 }, function (err, data) {
         if (err) {
-            return console.log('Error occurred: ' + err);
+            return logToConsoleAndFile('Error occurred: ' + err);
         }
         var title = data.tracks.items[0].name;
         var artist = data.tracks.items[0].artists[0].name;
         var album = data.tracks.items[0].album.name;
         var link = data.tracks.items[0].preview_url;
 
-        console.log(`Song name: ${title}`);
-        console.log(`Artist: ${artist}`);
-        console.log(`Album: ${album}`);
-        console.log(`Preview URL: ${link}`);
+        logToConsoleAndFile(`Song name: ${title}`);
+        logToConsoleAndFile(`Artist: ${artist}`);
+        logToConsoleAndFile(`Album: ${album}`);
+        logToConsoleAndFile(`Preview URL: ${link}`);
+        logToConsoleAndFile('');
     });
 }
 
 function movieThis(movie) {
     request(`http://www.omdbapi.com/?apikey=${keys.omdbKeys.api_key}&t=${movie}`, function (error, response, body) {
         if (error) {
-            return console.log(error);
+            return logToConsoleAndFile(error);
         }
         var movieObj = JSON.parse(body);
 
-        console.log(movieObj.Title);
-        console.log(movieObj.Year);
-        console.log('IMDB Rating:', movieObj.Ratings[0].Value);
-        console.log('RT Rating:', movieObj.Ratings[1].Value);
-        console.log(movieObj.Country);
-        console.log(movieObj.Language);
-        console.log(movieObj.Plot);
-        console.log(movieObj.Actors);
+        logToConsoleAndFile(movieObj.Title);
+        logToConsoleAndFile(movieObj.Year);
+        logToConsoleAndFile('IMDB Rating: ' + movieObj.Ratings[0].Value);
+        logToConsoleAndFile('RT Rating: ' + movieObj.Ratings[1].Value);
+        logToConsoleAndFile(movieObj.Country);
+        logToConsoleAndFile(movieObj.Language);
+        logToConsoleAndFile(movieObj.Plot);
+        logToConsoleAndFile(movieObj.Actors);
+        logToConsoleAndFile('');
     });
 }
 
@@ -108,10 +123,10 @@ else if (command === 'movie-this') {
 }
 
 else if (command === 'do-what-it-says') {
-    fs.readFile("random.txt", "utf8", function (error, data) {
+    fs.readFile('random.txt', 'utf8', function (error, data) {
 
         if (error) {
-            return console.log(error);
+            return logToConsoleAndFile(error);
         }
 
         // Then split it by new lines
