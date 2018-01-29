@@ -141,11 +141,25 @@ else if (command === 'do-what-it-says') {
             }
 
             else if (commandFromFile[0] === 'spotify-this-song') {
-                spotifyThisSong(commandFromFile[1].replace(/(")/g, ''));
+                var song = '';
+                if (commandFromFile[1]) {
+                    song = commandFromFile[1].replace(/(")/g, '');
+                }
+                else {
+                    song = 'track:The Sign artist:Ace of Base';
+                }
+                spotifyThisSong(song);
             }
 
             else if (commandFromFile[0] === 'movie-this') {
-                movieThis(commandFromFile[1].replace(/(")/g, ''));
+                var movie = '';
+                if (commandFromFile[1]) {
+                    movie = commandFromFile[1].replace(/(")/g, '');
+                }
+                else {
+                    movie = 'Mr. Nobody';
+                }
+                movieThis(movie);
             }    
         });
         
