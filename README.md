@@ -25,4 +25,7 @@ Searches for movie and returns info. Defaults to Mr. Nobody if no movie is speci
 node liri.js do-what-it-says
 `
 
-Reads random.txt and executes the commands.
+* Reads random.txt and executes the commands.
+* Can read multiple lines of commands.
+* Each command should be on a new line.
+* If a command is being given an argument, there must be a comma between the command and argument. The argument must be in regular quotes, not single.
