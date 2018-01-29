@@ -165,3 +165,13 @@ else if (command === 'do-what-it-says') {
         
     });
 }
+
+else {
+    console.log('Command not recognized.');
+    console.log();
+    console.log('Valid commands:\n\n'+
+                'my-tweets\n'+
+                'spotify-this-song "song name"\n'+
+                'movie-this "movie name"\n'+
+                'do-what-it-says');
+}
