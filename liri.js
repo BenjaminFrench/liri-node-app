@@ -33,7 +33,7 @@ function myTweets() {
     });
 
     // Call twitter API and get my 25 most recent tweets
-    twitterClient.get('statuses/user_timeline', { user_id: 'Ben38192128', count: 25 }, function (error, tweets, response) {
+    twitterClient.get('statuses/user_timeline', { user_id: 'Ben38192128', count: 20 }, function (error, tweets, response) {
         if (error) {
             return logToConsoleAndFile(error);
         }
